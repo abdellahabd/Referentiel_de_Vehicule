@@ -1,14 +1,14 @@
 import sequelize from "../Connection/database.js";
 import { DataTypes } from "sequelize";
-export const Vehicule = sequelize.define("Vehicule", {
-  Cod_Viecule: {
+const Vehicule = sequelize.define("Vehicule", {
+  Code_Viecule: {
     type: DataTypes.STRING,
     unique: true,
     allowNull: false,
     primaryKey: true,
   },
   Matricule: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     unique: true,
     allowNull: false,
   },
@@ -23,3 +23,5 @@ export const Vehicule = sequelize.define("Vehicule", {
     ],
   },
 });
+
+export default Vehicule;
