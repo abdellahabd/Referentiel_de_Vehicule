@@ -8,3 +8,8 @@ export const getuser = async () => {
   const { data } = await axios.get("http://localhost:2500/login");
   return data;
 };
+
+export const logout = async () => {
+  const { data } = await axios.get("http://localhost:2500/logout");
+  return data;
+};

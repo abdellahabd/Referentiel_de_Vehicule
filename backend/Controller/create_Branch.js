@@ -1,5 +1,5 @@
 import { Structer, Access } from "../Models/Models-index.js";
-
+import { get_strcuters } from "./getSubStructers.js";
 export const craete = async () => {
   const Com = await Structer.create({
     wilaya: "Alger",

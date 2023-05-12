@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import session from "express-session";
 import cookie_parser from "cookie-parser";
 import { craete } from "./Controller/create_Branch.js";
+import { create_data } from "./Controller/create-data.js";
 
 import {
   vehiculeRoute,
@@ -13,6 +14,7 @@ import {
   ContratRoute,
   AdminRoute,
   StructerRoute,
+  ModeleRoute,
 } from "./Routers/Route_Index.js";
 
 import { Vehicule, User, Structer, Access } from "./Models/Models-index.js";
@@ -29,6 +31,7 @@ app.use(cookie_parser()); //to parse cockies from front-end
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+///configeration
 app.use(
   session({
     secret: "mysecretkey",
@@ -47,18 +50,24 @@ app.use("/admin", AdminRoute);
 
 app.use(ContratRoute);
 
+app.use(ModeleRoute);
+
 app.use("/structer", StructerRoute);
 
-app.use(vehiculeRoute);
+app.use("/vehicule", vehiculeRoute);
 
 sequelize.sync({ force: true }).then(async () => {
   const passhached = await bcrypt.hash("admin2002", 10);
+  craete();
+  create_data();
   const Admin = await User.create({
     name: "admin",
     password: passhached,
     email: "admin@gmail.com",
   });
   Admin.createAccess({ name: "admin" });
+  const str = await Structer.findByPk(1);
+  await str.addUser(Admin);
+  console.log;
   app.listen("2500");
-  craete();
 });

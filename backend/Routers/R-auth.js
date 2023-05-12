@@ -1,6 +1,7 @@
 import express from "express";
 import { validationResult, body } from "express-validator";
 import { User, Access } from "../Models/Models-index.js";
+
 import bcypt from "bcryptjs";
 
 const route = express.Router();
@@ -48,21 +49,26 @@ route.post("/login", async (req, res) => {
   }
 });
 
-route.post(
-  "/singup",
+route.get("/logout", (req, res) => {
+  req.session.destroy();
+  console.log("session delete");
+  res.json();
+});
+// route.post(
+//   "/singup",
 
-  body("email").isEmail().withMessage("enter a valide email"),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.json({ errors: errors.array() });
-    } else {
-      const email = req.body.email;
-      const password = req.body.password;
-      const name = req.body.name;
-      User.create({ name: name, password: password, email: email });
-      res.json("ok");
-    }
-  }
-);
+//   body("email").isEmail().withMessage("enter a valide email"),
+//   (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       res.json({ errors: errors.array() });
+//     } else {
+//       const email = req.body.email;
+//       const password = req.body.password;
+//       const name = req.body.name;
+//       User.create({ name: name, password: password, email: email });
+//       res.json("ok");
+//     }
+//   }
+// );
 export default route;

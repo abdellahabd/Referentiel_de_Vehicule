@@ -30,20 +30,24 @@ function login() {
   };
 
   const HandelSubmit = async (e) => {
-    e.preventDefault();
-    const response = await postUserLogin(Valeus);
-    if (response.error) {
-      if (response.error.type === "email") {
-        setemailerros(true);
-        setpassworderros(false);
+    try {
+      e.preventDefault();
+      const response = await postUserLogin(Valeus);
+      if (response.error) {
+        if (response.error.type === "email") {
+          setemailerros(true);
+          setpassworderros(false);
+        } else {
+          setpassworderros(true);
+          setemailerros(false);
+        }
+        seterromsg(response.error.msg);
       } else {
-        setpassworderros(true);
-        setemailerros(false);
+        Dispatch(addUser(response.user));
+        NAv("/home");
       }
-      seterromsg(response.error.msg);
-    } else {
-      Dispatch(addUser(response.user));
-      NAv("/home");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -98,12 +102,6 @@ function login() {
             <Button className="mt-5 mx-auto " type="submit">
               Login
             </Button>
-            {/* <p className="mt-6 text-gray-600">
-              don't have an acount?{" "}
-              <Link className="text-gray-900 underline" to="singup">
-                Register
-              </Link>
-            </p> */}
           </div>
         </form>
       </div>

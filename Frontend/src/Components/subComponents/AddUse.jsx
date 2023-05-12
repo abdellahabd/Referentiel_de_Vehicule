@@ -12,15 +12,21 @@ import {
   Option,
 } from "@material-tailwind/react";
 
-function AddUse({ allStr }) {
+function AddUse({ allStr, handelDialog }) {
   const [isCheckedAllCar, setIsCheckedAllCar] = useState(false);
   const [isCheckedAddcar, setIsCheckedAddcar] = useState(false);
   const [isCheckedRemoveCar, setIsCheckedRemoveCar] = useState(false);
+  const [isCheckedValidiCar, setisCheckedValidiCar] = useState(false);
+
   const [isCheckedAllUser, setIsCheckedAllUser] = useState(false);
   const [isCheckedAddUser, setIsCheckedAddUser] = useState(false);
   const [isCheckedRemoveUser, setIsCheckedRemoveUser] = useState(false);
+  const [isCheckedValidiUser, setisCheckedValidiUser] = useState(false);
 
-  const [rolles, setrolles] = useState([]);
+  const [isCheckedAllContrat, setIsCheckedAllContrat] = useState(false);
+  const [isCheckedAddContrat, setIsCheckedAddContrat] = useState(false);
+  const [isCheckedRemoveContrat, setIsCheckedRemoveContrat] = useState(false);
+  const [isCheckedValidiContrat, setisCheckedValidiContrat] = useState(false);
 
   const [selectvalue, setselectvalue] = useState();
 
@@ -44,18 +50,20 @@ function AddUse({ allStr }) {
   const handelFormSubmit = async (e) => {
     try {
       e.preventDefault();
-      setrolles([
+      const rolles = [
         { addcar: isCheckedAddcar },
         { removecar: isCheckedRemoveCar },
         { adduser: isCheckedAddUser },
         { removeruser: isCheckedRemoveUser },
-      ]);
+      ];
 
-      const respomse = await Postadduser(
+      const response = await Postadduser(
         { userinfo: user, str: selectvalue },
         rolles
       );
-      setrolles([]);
+      if (response == "success") {
+        handelDialog(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -84,15 +92,19 @@ function AddUse({ allStr }) {
       case "deletecar":
         setIsCheckedRemoveCar(!isCheckedRemoveCar);
         break;
+      case "Validetecar":
+        setisCheckedValidiCar(!isCheckedValidiCar);
+        break;
+
       case "adduser":
         setIsCheckedAddUser(!isCheckedAddUser);
         break;
       case "deleteuser":
         setIsCheckedRemoveUser(!isCheckedRemoveUser);
         break;
-
-      // default:
-      //   break;
+      case "valideuser":
+        setisCheckedValidiUser(!isCheckedValidiUser);
+        break;
     }
   };
 
@@ -160,8 +172,18 @@ function AddUse({ allStr }) {
                   />
                   <label htmlFor="deletecar">Suprimer Vehicul</label>
                 </div>
+                <div>
+                  <Checkbox
+                    name="Validetecar"
+                    id="Validetecar"
+                    checked={isCheckedValidiCar}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="deletecar">Validé Vehicul</label>
+                </div>
               </div>
             </div>
+            {/* ///////////////////////////////////////////////////////////////////////////////////////////// */}
             <div>
               <Checkbox
                 id="user"
@@ -188,6 +210,93 @@ function AddUse({ allStr }) {
                     onChange={handleCheck}
                   />
                   <label htmlFor="deleteuser">Suprimer Utilisatuer</label>
+                </div>
+                <div>
+                  <Checkbox
+                    name="valideuser"
+                    id="valideuser"
+                    checked={isCheckedRemoveUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="deleteuser">Validé Utilisatuer</label>
+                </div>
+              </div>
+            </div>
+            {/* ///////////////////////////////////////////////////////////////////////////////////////////// */}
+            <div>
+              <Checkbox
+                id="user"
+                name="user"
+                checked={isCheckedAllUser}
+                onChange={handleCheckAll}
+              />
+              <label htmlFor="user">Contrat</label>
+              <div className="pl-5 flex flex-col  ">
+                <div>
+                  <Checkbox
+                    id="adduser"
+                    name="adduser"
+                    checked={isCheckedAddUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="adduser">Ajoute Contrat</label>
+                </div>
+                <div>
+                  <Checkbox
+                    name="deleteuser"
+                    id="deleteuser"
+                    checked={isCheckedRemoveUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="deleteuser">Suprimer Contrat</label>
+                </div>
+                <div>
+                  <Checkbox
+                    name="valideuser"
+                    id="valideuser"
+                    checked={isCheckedRemoveUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="deleteuser">Validé Contrat</label>
+                </div>
+              </div>
+            </div>
+            {/* ///////////////////////////////////////////////////////////////////////////////////////////// */}
+            <div>
+              <Checkbox
+                id="user"
+                name="user"
+                checked={isCheckedAllUser}
+                onChange={handleCheckAll}
+              />
+              <label htmlFor="user">Modele</label>
+              <div className="pl-5 flex flex-col  ">
+                <div>
+                  <Checkbox
+                    id="adduser"
+                    name="adduser"
+                    checked={isCheckedAddUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="adduser">Ajoute Modele</label>
+                </div>
+                <div>
+                  <Checkbox
+                    name="deleteuser"
+                    id="deleteuser"
+                    checked={isCheckedRemoveUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="deleteuser">Suprimer Modele</label>
+                </div>
+                <div>
+                  <Checkbox
+                    name="valideuser"
+                    id="valideuser"
+                    checked={isCheckedRemoveUser}
+                    onChange={handleCheck}
+                  />
+                  <label htmlFor="deleteuser">Validé Modele</label>
                 </div>
               </div>
             </div>

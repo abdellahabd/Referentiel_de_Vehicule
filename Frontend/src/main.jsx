@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import "./pagination.css";
 import { ThemeProvider } from "@material-tailwind/react";
 import { store } from "./Store/index";
 import { Provider } from "react-redux";

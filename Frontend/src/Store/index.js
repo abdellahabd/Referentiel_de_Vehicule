@@ -12,6 +12,7 @@ const user = createSlice({
     },
   },
 });
+
 const ContractSlices = createSlice({
   initialState: [],
   name: "Contract_cars",

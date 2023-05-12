@@ -8,5 +8,15 @@ export const Postadduser = async (user, rolles) => {
     user,
     rolles,
   });
-  return data.contarcts;
+  return data;
+};
+
+export const validateuser = async (id) => {
+  const { data } = await axios.get(`http://localhost:2500/validateuser/${id}`);
+  return data;
+};
+
+export const removeuser = async (id) => {
+  const { data } = await axios.get(`http://localhost:2500/removeuser/${id}`);
+  return data;
 };

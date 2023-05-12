@@ -20,16 +20,18 @@ function adminPage() {
   const [Users, setUsers] = useState([]);
   const [allStr, setallStr] = useState([]);
   const [open, setOpen] = useState(false);
+  const [Branche, setBranche] = useState();
   useEffect(() => {
     async function name() {
-      const users = await fetchall();
-      setUsers(users);
+      const response = await fetchall();
+      response(response.b);
+      setUsers(response.users);
       const strs = await fetchallStr();
       setallStr(strs);
     }
 
     name();
-  }, []);
+  }, [open]);
   const handleOpen = () => setOpen(!open);
   return (
     <div className={"bg-blue-gray-50  h-screen "}>
@@ -48,35 +50,54 @@ function adminPage() {
                 <th scope="col" className="px-6 py-4">
                   Srtucter
                 </th>
-                <th scope="col" className="px-6 py-4">
-                  rolles
-                </th>
+
                 <th scope="col" className="px-6 py-4">
                   branche
                 </th>
               </tr>
             </thead>
             <tbody>
-              {Users.map((user, index) => (
-                <tr
-                  key={index}
-                  className=" hover:bg-[#3061ac] border-y-[1px] border-gray-500 "
-                >
-                  <td className="px-6 py-4 font-medium  ">{user.email}</td>
-                  <td className="px-6 py-4 border-y-[1px] border-gray-500">
-                    {user.name}
-                  </td>
-                  <td className="px-6 py-4">{user.Accesses[0].name}</td>
-                </tr>
-              ))}
+              {Users.length > 0 &&
+                Users.map((user, index) => (
+                  <tr
+                    key={index}
+                    className=" hover:bg-[#3061ac] border-y-[1px] border-gray-500 "
+                  >
+                    <td className="px-6 py-4 font-medium  ">{user.email}</td>
+                    <td className="px-6 py-4 border-y-[1px] border-gray-500">
+                      {user.name}
+                    </td>
+                    <td className="px-6 py-4 border-y-[1px] border-gray-500">
+                      {user.Structerid}
+                    </td>
+                    <td className="px-6 py-4 border-y-[1px] border-gray-500">
+                      {user.branche}
+                    </td>
+                    {/* <td className="px-6 py-4">{user.Accesses[0].name}</td> */}
+                  </tr>
+                ))}
+              <tr>
+                <div className="px-3 p-1">
+                  <Button
+                    size="sm"
+                    onClick={handleOpen}
+                    className="mt-2 flex items-center  "
+                  >
+                    <GrAdd color="green" /> User
+                  </Button>
+                </div>
+                <td />
+                <td />
+
+                <div className=" table-cell font-bold text-lg  col-span-2">
+                  Total: <span className="font-body"> {Users.length}</span>
+                </div>
+              </tr>
             </tbody>
           </table>
-          <Button onClick={handleOpen} className="mt-2 flex items-center ">
-            <GrAdd color="green" /> User
-          </Button>
 
           <Dialog size="xl" open={open} handler={handleOpen} className="">
-            <AddUse allStr={allStr} />
+            <AddUse allStr={allStr} handelDialog={setOpen} />
           </Dialog>
         </div>
       </div>

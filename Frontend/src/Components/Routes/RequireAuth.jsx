@@ -10,3 +10,4 @@ export const RequireAuth = () => {
 
   return <>{user.name != "" ? <Outlet /> : <Navigate to="/" />}</>;
 };
+//user.name = true

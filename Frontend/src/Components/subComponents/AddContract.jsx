@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Addcars } from "../index";
+import React, { useState, useEffect } from "react";
+import { Addcars, AddTransporteur } from "../index";
+import { fetchTransporteurs } from "../../API/Contract.js";
 import { useSelector, useDispatch } from "react-redux";
 import { addcars, removecar, submitContrat } from "../../Store/index";
 import {
@@ -7,9 +8,8 @@ import {
   Button,
   Card,
   Dialog,
-  DialogFooter,
-  DialogBody,
-  DialogHeader,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import { MdOutlineRemoveCircle } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
@@ -19,9 +19,14 @@ import { postContart } from "../../API/Contract.js";
 
 function AddContract() {
   const Dispatch = useDispatch();
+
   const Contract_cars = useSelector((state) => {
     return state.Contract_cars;
   });
+
+  const [tr, settr] = useState([]);
+
+  const [istropen, setistropen] = useState(false);
 
   const [ContratDate, setContratDate] = useState({
     numero: "",
@@ -31,11 +36,17 @@ function AddContract() {
   });
 
   const [isAddCars, setisAddCars] = useState(false);
-
+  const [selectvaleuTR, setselectvaleuTR] = useState("");
   const [car, setcar] = useState({
     Code_Viecule: "",
     Matricule: "",
     state: "",
+  });
+
+  const [trons, settrons] = useState({
+    nom: "",
+    adresse: "",
+    tel: "",
   });
 
   ///
@@ -53,12 +64,31 @@ function AddContract() {
   };
   const handelContratfromsubmit = () => {};
 
+  const handelclicktr = () => {
+    handeltsopen();
+    tr.push(trons);
+  };
+
   const handelContratdatachange = (e) => {
     setContratDate((pre) => ({
       ...pre,
       [e.target.name]: e.target.value,
     }));
   };
+
+  const handeltsopen = () => {
+    setistropen(!istropen);
+  };
+
+  /////////////////////
+  useEffect(() => {
+    async function name() {
+      const response = await fetchTransporteurs();
+
+      settr(response);
+    }
+    name();
+  }, []);
 
   return (
     <div
@@ -88,6 +118,28 @@ function AddContract() {
             type="number"
             onChange={handelContratdatachange}
           />
+        </div>
+        <div className="w-2/6 flex items-start flex-col gap-1">
+          <Select
+            value={selectvaleuTR}
+            onChange={(e) => {
+              console.log(e);
+            }}
+          >
+            {tr.map((t) => (
+              <Option value={t.name} key={t.ID_T}>
+                {t.name}
+              </Option>
+            ))}
+          </Select>
+          <Button
+            size="sm"
+            color="light-green"
+            variant="outlined"
+            onClick={handeltsopen}
+          >
+            <span>+</span>Add
+          </Button>
         </div>
 
         <div className="w-2/6 flex flex-col gap-2">
@@ -170,38 +222,7 @@ function AddContract() {
             <MdAdd />
           </Button>
           <Dialog open={isAddCars} handler={handleraddingcars}>
-            <div className="w-[30rem]">
-              <Card className="">
-                <form className="w-[60%] m-auto">
-                  <Input
-                    label="Code"
-                    type="text"
-                    name="Code_Viecule"
-                    onChange={handelChangeValues}
-                  />
-                  <Input
-                    label="Matricule"
-                    type="text"
-                    name="Matricule"
-                    onChange={handelChangeValues}
-                  />
-                  <Input
-                    label="state"
-                    type="text"
-                    name="state"
-                    onChange={handelChangeValues}
-                  />
-                  <Button
-                    onClick={() => {
-                      Dispatch(addcars(car));
-                      handleraddingcars();
-                    }}
-                  >
-                    Ajoute
-                  </Button>
-                </form>
-              </Card>
-            </div>
+            <Addcars type="privés" handelclose={handleraddingcars} />
           </Dialog>
         </div>
 
@@ -216,6 +237,10 @@ function AddContract() {
             Ajoute
           </Button>
         </div>
+
+        <Dialog open={istropen} handler={handeltsopen}>
+          <AddTransporteur settrons={settrons} handelclick={handelclicktr} />
+        </Dialog>
       </form>
     </div>
   );
