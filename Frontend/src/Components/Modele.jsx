@@ -1,22 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { Navbar, Addmodele } from "./index";
-import { GetModeles } from "../API/Modele.js";
+import { GetModeles, validatemodele, removemodele } from "../API/Modele.js";
 import { HiFilter } from "react-icons/hi";
-import { Button, Dialog } from "@material-tailwind/react";
-import ReactPaginate from "react-paginate";
+import { Button, Dialog, Snackbar, Alert } from "@mui/material";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarExport,
+  GridToolbarDensitySelector,
+} from "@mui/x-data-grid";
 
 function Modele() {
   const [modeles, setmodeles] = useState([]);
   const [isopen, setisopen] = useState(false);
+  const [isEdit, setisEdit] = useState(false);
+  const [changer, setchanger] = useState(0);
+  const [isselect, setisselect] = useState({ id: "" });
+  ////alert
+  const [openSnackbardelet, setopenSnackbardelet] = useState(false);
+  const [openSnackbarvalide, setopenSnackbarvalide] = useState(false);
+  const [openSnackbarupdate, setopenSnackbarupdate] = useState(false);
+  const [openSnackbarAdd, setopenSnackbarAdd] = useState(false);
+  const fakeModele = [
+    {
+      id: 1,
+      Code: "",
+      type: "",
+      state: "",
+      Matricule: "",
+      valid: "",
+    },
+    {
+      id: 2,
+      Code: "",
+      type: "",
+      state: "",
+      Matricule: "",
+      valid: "",
+    },
+  ];
 
-  const [itemOffset, setItemOffset] = useState(0);
-  const endOffset = itemOffset + 10;
-  const currentItems = modeles.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(modeles.length / 10);
-
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * 10) % modeles.length;
-    setItemOffset(newOffset);
+  const handeledit = () => {
+    setisEdit(!isEdit);
   };
   const handeladd = () => {
     setisopen(!isopen);
@@ -28,98 +55,346 @@ function Modele() {
       setmodeles(response);
     }
     name();
-  }, [isopen]);
+  }, [isopen, changer, isEdit]);
 
   return (
     <div className={"bg-blue-gray-50  min-h-screen "}>
       <Navbar />
 
-      <div className="flex mt-7">
-        <div className="m-auto sm:min-w-[80%]">
-          <div className="flex justify-start w-[90%] mb-2">
-            <Button
-              className="flex items-center p-3"
-              variant="outlined"
-              color="gray"
-            >
-              <HiFilter /> Filter
-            </Button>
-          </div>
-          <table className="bg-white  border-collapse   text-center text-sm font-light w-[90%] shadow-sm shadow-gray-500 ">
-            <thead>
-              <tr className="bg-[#1089ff] text-white font-bold">
-                <th className="px-6 py-4">Code Modele</th>
-                <th className="px-6 py-4">Moteur Puossance </th>
-                <th className="px-6 py-4"> Moteur type</th>
-                <th className="px-6 py-4"> Cylindree</th>
-                <th className="px-6 py-4">BV type</th>
-                <th className="px-6 py-4">BV marque </th>
-                <th className="px-6 py-4">validite </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((m, index) => (
-                <tr
-                  key={index}
-                  className=" hover:bg-[#3061ac] border-y-[1px] border-gray-500 "
-                >
-                  <td className="px-6 py-4">{m.id_M}</td>
-                  <td className="px-6 py-4">{m.moteur_Puossance}</td>
-                  <td className="px-6 py-4">{m.moteur_type}</td>
-                  <td className="px-6 py-4">{m.Cylindree}</td>
-                  <td className="px-6 py-4">{m.BV_type}</td>
-                  <td className="px-6 py-4">{m.BV_marque}</td>
-                  <td className="px-6 py-4 flex justify-center">
-                    {m.validite ? (
+      <div className={"flex flex-col  mt-7 "}>
+        <div className="m-auto w-[70em] lg:w-[95em] ">
+          <DataGrid
+            className="w-full content-center"
+            columns={[
+              {
+                field: "Code",
+                headerName: "Code Model",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+                hidden: true,
+              },
+
+              {
+                field: "genre",
+                headerName: "Genre",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "moteur_Puossance",
+                headerName: "Moteur Puossance",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "moteur_type",
+                headerName: "Moteur type",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "Cylindree",
+                headerName: "Cylindre",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "BV_type",
+                headerName: "BV type",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "BV_marque2",
+                headerName: "BV marque",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "BV_marque3",
+                headerName: "BV marque",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "BV_marque4",
+                headerName: "BV marqu4e",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "BV_marque5",
+                headerName: "BV marque5",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+                disableColumnMenu: true,
+              },
+              {
+                field: "validite",
+                headerName: "Validite",
+                width: "200",
+                align: "center",
+                flex: true,
+                headerAlign: "center",
+                headerClassName: "table-th",
+
+                disableColumnMenu: true,
+                renderCell: (modele) => {
+                  if (modele.row.valid) {
+                    return (
                       <img
-                        className="w-1 h-1 hover:bg-blue-gray-100"
+                        className="w-4 h-4 hover:bg-blue-gray-100"
                         src="/assets/valide.png"
                       ></img>
-                    ) : (
+                    );
+                  } else {
+                    return (
                       <img
                         src="../assets/notvalide.png"
                         className="w-4 h-4 hover:bg-blue-gray-100"
                       ></img>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <Button
-                  onClick={handeladd}
-                  className="flex h-fit text-xs justify-center p-2 my-2 gap-1 mx-auto w-20"
-                  variant="outlined"
-                >
-                  Add
-                </Button>
-
-                <td />
-                <td />
-                <td />
-                <td />
-
-                <div className=" table-cell font-bold text-lg  col-span-2">
-                  Total: <span className="font-body"> {modeles.length}</span>
-                </div>
-              </tr>
-            </tbody>
-          </table>
-          <ReactPaginate
-            className="flex gap-20 justify-center"
-            breakLabel="..."
-            nextLabel="next >"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={1}
-            pageCount={pageCount}
-            previousLabel="< previous"
-            renderOnZeroPageCount={null}
+                    );
+                  }
+                },
+              },
+            ]}
+            slots={{
+              toolbar: () => {
+                return (
+                  <GridToolbarContainer>
+                    <GridToolbarColumnsButton></GridToolbarColumnsButton>
+                    <GridToolbarFilterButton />
+                    <GridToolbarDensitySelector />
+                    <GridToolbarExport />
+                  </GridToolbarContainer>
+                );
+              },
+            }}
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                  BV_marque2: false,
+                  BV_marque3: false,
+                  BV_marque4: false,
+                  BV_marque5: false,
+                },
+              },
+              pagination: { paginationModel: { pageSize: 10 } },
+            }}
+            onRowClick={(param) => {
+              // console.log(param.row);
+              if (isselect.id === param.id) {
+                setisselect({ id: "" });
+              } else {
+                setisselect(param.row);
+              }
+            }}
+            pageSizeOptions={[10, 25]}
+            rows={
+              modeles.length === 0
+                ? fakeModele
+                : modeles.map((modele) => {
+                    return {
+                      id: modele.id_M,
+                      Code: modele.id_M,
+                      moteur_Puossance: modele.moteur_Puossance,
+                      moteur_type: modele.moteur_type,
+                      Cylindree: modele.Cylindree,
+                      genre: modele.genre.name,
+                      genreIdG: modele.genre.id_G,
+                      BV_marque: modele.BV_marque,
+                      BV_type: modele.BV_type,
+                      valid: modele.validite,
+                    };
+                  })
+            }
+            loading={modeles.length == 0 ? true : false}
+            rowSelectionModel={isselect.id != "" ? isselect.id : []}
           />
+          <div className="flex mt-1 gap-2 ">
+            {" "}
+            <Button
+              onClick={handeladd}
+              variant="contained"
+              sx={{ width: "fit-content", textTransform: "none" }}
+            >
+              Ajouter Modele
+            </Button>
+            <span
+              className={` flex gap-2` + (isselect.id === "" ? " hidden" : " ")}
+            >
+              <span
+                className={
+                  `flex gap-2` + (isselect.valid === true ? " hidden" : " ")
+                }
+              >
+                <Button
+                  sx={{ width: "fit-content", textTransform: "none" }}
+                  onClick={async () => {
+                    setchanger(!changer);
+                    const response = await validatemodele(isselect.id);
+                    if (response == "done") {
+                      setopenSnackbarvalide(true);
+                      setTimeout(() => {
+                        setisselect({ id: "" });
+                      }, 2100);
+                    }
+                  }}
+                  variant="contained"
+                  color="success"
+                  className="w-fit mt-1 flex gap-2 items-center"
+                  // sx={{ textTransform: "lowercase" }}
+                  // sx={{ display: isselect.id === "" ? "none" : "" }}
+                >
+                  Valider
+                </Button>
+                <Button
+                  sx={{ width: "fit-content", textTransform: "none" }}
+                  onClick={handeledit}
+                  variant="contained"
+                  color="inherit"
+                  className="w-fit mt-1 flex gap-2 items-center"
+                  // sx={{ display: isselect.id === "" ? "none" : "" }}
+                >
+                  Modifier
+                </Button>
+              </span>
+
+              <Button
+                sx={{ width: "fit-content", textTransform: "none" }}
+                onClick={async () => {
+                  const responce = await removemodele(isselect.id);
+                  setchanger(!changer);
+                  if (responce == "done") {
+                    setopenSnackbardelet(true);
+                    setTimeout(() => {
+                      setisselect({ id: "" });
+                    }, 2100);
+                  }
+                }}
+                color="error"
+                variant="contained"
+                className="w-fit mt-1 flex gap-2 items-center "
+                // sx={{ display: isselect.id === "" ? "none" : "" }}
+              >
+                Supprimer
+              </Button>
+            </span>
+          </div>
         </div>
       </div>
-
-      <Dialog open={isopen} handler={handeladd} size="xl">
-        <Addmodele handeladd={handeladd} />
+      <Dialog open={isopen} onClose={handeladd} maxWidth="lg">
+        <Addmodele
+          mood="add"
+          handeladd={handeladd}
+          m={{}}
+          onclose={setopenSnackbarAdd}
+        />
       </Dialog>
+      <Dialog open={isEdit} onClose={handeledit} maxWidth="lg">
+        <Addmodele
+          mood="edit"
+          handeladd={handeledit}
+          m={isselect}
+          onclose={setopenSnackbarupdate}
+        />
+      </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openSnackbardelet}
+        autoHideDuration={2000}
+        onClose={() => setopenSnackbardelet(false)}
+      >
+        <Alert
+          onClose={() => setopenSnackbardelet(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Modèle {isselect.id} a été supprimé
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openSnackbarupdate}
+        autoHideDuration={2000}
+        onClose={() => setopenSnackbarupdate(false)}
+      >
+        <Alert
+          onClose={() => setopenSnackbarupdate(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Modèle {isselect.id} a été modifié
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openSnackbarvalide}
+        autoHideDuration={2000}
+        onClose={() => setopenSnackbarvalide(false)}
+      >
+        <Alert
+          onClose={() => setopenSnackbarvalide(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Modèle {isselect.id} a été validée
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openSnackbarAdd}
+        autoHideDuration={2000}
+        onClose={() => setopenSnackbarAdd(false)}
+      >
+        <Alert
+          onClose={() => setopenSnackbarAdd(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Un modèle {isselect.id} a été ajouté
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { getcar_contract } from "./../../API/Cars.js";
 import { getbyid } from "./../../API/Contract.js";
+// import {
+//   Button,
+//   TextField,
+//   Dialog,
+//   Checkbox,
+//   Card,
+//   Select,
+//   Option,
+// } from "@material-tailwind/react";
 import {
   Button,
-  Input,
+  TextField,
   Dialog,
   Checkbox,
   Card,
   Select,
-  Option,
-} from "@material-tailwind/react";
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 function addavenant() {
   const { idcontract } = useParams();
@@ -110,7 +118,7 @@ function addavenant() {
           </p>
           <div className="p-[1rem] flex flex-col  gap-3  pr-96  ">
             {/* <label htmlFor="date_d"> date Debut</label>
-            <input id="date_d" type="date" /> */}
+            <TextField id="date_d" type="date" /> */}
             <label
               htmlFor="date_d"
               className={isProlongation ? `text-gray-800` : `text-gray-500`}
@@ -118,7 +126,7 @@ function addavenant() {
               {" "}
               date Debut :
             </label>
-            <Input
+            <TextField
               id="date_d"
               type="date"
               label="Date Debut"
@@ -136,7 +144,7 @@ function addavenant() {
               {" "}
               date Fin :
             </label>
-            <Input
+            <TextField
               id="date_f"
               className="first-letter:"
               type="date"
@@ -222,19 +230,19 @@ function addavenant() {
                         nouvelle vehicule
                       </p>
 
-                      <Input
+                      <TextField
                         label="Code"
                         type="text"
                         name="Code_Viecule"
                         onChange={handelChangeValues}
                       />
-                      <Input
+                      <TextField
                         label="Matricule"
                         type="text"
                         name="Matricule"
                         onChange={handelChangeValues}
                       />
-                      <Input
+                      <TextField
                         label="state"
                         type="text"
                         name="state"
@@ -249,7 +257,7 @@ function addavenant() {
                         ]);
                       }}
                     >
-                      Ajoute
+                      Ajouter
                     </Button>
                   </form>
                 </Card>

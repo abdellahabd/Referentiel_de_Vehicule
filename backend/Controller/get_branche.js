@@ -6,7 +6,7 @@ export const getBranche = async (str) => {
 
     while (code != null) {
       var strucer = await Structer.findOne({ where: { CodeS: code } });
-      code = strucer.Structerid;
+      code = strucer.StructerCodeS;
     }
   } catch (error) {
     console.log(error);

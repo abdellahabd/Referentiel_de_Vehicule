@@ -12,6 +12,25 @@ const user = createSlice({
     },
   },
 });
+const DoirtUser = createSlice({
+  initialState: {
+    Contrat: [false, false, false, false, false, false],
+    Modele: [false, false, false, false, false],
+    car: [false, false, false, false, false, false],
+    chf: [false, false, false, false, false],
+    relation: [false, false, false, false, false],
+    user: [false, false, false, false, false],
+  },
+  name: "Droit",
+  reducers: {
+    adddroit: (state, action) => {
+      return action.payload;
+    },
+    removeDoirt: (state, action) => {
+      return {};
+    },
+  },
+});
 
 const ContractSlices = createSlice({
   initialState: [],
@@ -30,7 +49,12 @@ const ContractSlices = createSlice({
 });
 
 export const store = configureStore({
-  reducer: { Contract_cars: ContractSlices.reducer, User: user.reducer },
+  reducer: {
+    Contract_cars: ContractSlices.reducer,
+    User: user.reducer,
+    Droit: DoirtUser.reducer,
+  },
 });
 export const { addcars, removecar, submitContrat } = ContractSlices.actions;
 export const { addUser, removeuser } = user.actions;
+export const { adddroit, removeDoirt } = DoirtUser.actions;

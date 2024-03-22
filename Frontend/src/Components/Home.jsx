@@ -1,200 +1,206 @@
 import React, { useState, useEffect } from "react";
-import { fetchCars, validateCar, removeCar } from "../API/Cars.js";
-import { Button, Dialog } from "@material-tailwind/react";
-import { IoMdAddCircle } from "react-icons/io";
-import { HiFilter } from "react-icons/hi";
-import { Navbar, Addcars, Editcar } from "./index.jsx";
-import ReactPaginate from "react-paginate";
+import { Navbar } from "./index";
+import contrat from "/assets/contrat.png";
+import modele from "/assets/voiture.png";
+import chauffeur from "/assets/chauffeur.png";
+import alarme from "/assets/alarme.png";
+import user from "/assets/avatar.png";
+import relstion from "/assets/distance.png";
+import camion from "/assets/cars.png";
+import { Snackbar, Alert, Button, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getuser } from "../API/auth.js";
+import { addUser, adddroit } from "../Store/index.js";
 
 function Home() {
-  const [isAddCars, setisAddCars] = useState(false);
-  const [iseditcar, setiseditcar] = useState(false);
-  const [cars, setcars] = useState([]);
-  const [editcar, seteditcar] = useState();
-  const [rowindex, setrowindex] = useState(null);
-  const [changer, setchanger] = useState(0);
-  // for pagination
-  const [itemOffset, setItemOffset] = useState(0);
-  const endOffset = itemOffset + 10;
-  const currentItems = cars.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(cars.length / 10);
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * 10) % cars.length;
-    setItemOffset(newOffset);
-  };
-
-  /////////////////////
-  const handleraddingcars = () => {
-    setisAddCars(!isAddCars);
-  };
-  const handlereditingcars = () => {
-    setiseditcar(!iseditcar);
-  };
-
-  const handleRowMouseEnter = (index) => {
-    seteditcar(cars[index]);
-    if (rowindex === index) {
-      setrowindex(null);
-    } else {
-      setrowindex(index);
-    }
-  };
-
-  const handelvalideClick = () => {};
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [openSnackbar, setopenSnackbar] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [Droit, setDroit] = useState({});
 
   useEffect(() => {
-    fetchCars().then((cars) => {
-      setcars(cars);
+    getuser().then((data) => {
+      if (data.user) {
+        setDroit(data.Accesses);
+        dispatch(addUser(data.user));
+        dispatch(adddroit(data.Accesses));
+      }
+      setIsLoading(false);
     });
-  }, [changer]);
+  }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex w-screen h-screen justify-center items-center">
+        <CircularProgress size={60} />
+      </div>
+    );
+  }
   return (
-    <div className={"bg-blue-gray-50  min-h-screen "}>
-      <Navbar />
+    <div className={"bg-blue-gray-50   h-screen "}>
+      <Navbar />{" "}
+      <div className="grid grid-cols-3 gap-4 p-3 h-[90vh]">
+        <Button
+          onClick={() => {
+            if (Droit.Contrat.some((element) => element === true)) {
+              navigate("/contrats");
+            } else {
+              if (!openSnackbar) {
+                setopenSnackbar(true);
+              }
+            }
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={contrat} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Contrats
+          </p>
+        </Button>
 
-      <div className={"flex  mt-7 "}>
-        <div className="m-auto sm:min-w-[80%]">
-          <div className="flex justify-start w-[90%] mb-2 ">
-            <Button
-              className="flex items-center p-3"
-              variant="outlined"
-              color="gray"
-            >
-              <HiFilter /> Filter
-            </Button>
-          </div>
-          <table className="bg-white  border-collapse   text-center text-sm font-light w-[90%] shadow-sm shadow-gray-500  ">
-            <thead>
-              <tr className="bg-[#1089ff] text-white font-bold">
-                <th scope="col" className="px-6 py-4">
-                  Code
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  Matricule
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  state
-                </th>
-                <th scope="col" className="px-6 py-4">
-                  type
-                </th>
-                <th className="px-6 py-4">validite </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((car, index) => (
-                <tr
-                  onClick={() => handleRowMouseEnter(index)}
-                  key={car.Code_Viecule}
-                  className=" hover:bg-[#3061ac] border-y-[1px] border-gray-500 hover:scale-[1.015]  duration-300 hover:text-white ease-in relative cursor-pointer"
-                >
-                  <td className="px-6 py-4 font-medium  ">
-                    {car.Code_Viecule}
-                  </td>
-                  <td className="px-6 py-4 border-y-[1px] border-gray-500">
-                    {car.Matricule}
-                  </td>
-                  <td className="px-6 py-4">{car.state}</td>
-                  <td className="px-6 py-4">{car.type}</td>
-                  <td className="px-6 py-4 flex justify-center">
-                    {car.validite ? (
-                      <img
-                        className="w-4 h-4 hover:bg-blue-gray-100"
-                        src="/assets/valide.png"
-                      ></img>
-                    ) : (
-                      <img
-                        src="../assets/notvalide.png"
-                        className="w-4 h-4 hover:bg-blue-gray-100"
-                      ></img>
-                    )}
-                  </td>
-                  <div
-                    className={`absolute  top-2 right-2  transition  h-10 w-40  " ${
-                      index === rowindex
-                        ? " flex items-center gap-1 delay-200  duration-500 ease-in translate-x-[11rem] "
-                        : "opacity-0"
-                    }  `}
-                  >
-                    <Button
-                      onClick={async () => {
-                        setchanger(!changer);
-                        const response = await validateCar(car.Code_Viecule);
-                        console.log(response);
-                      }}
-                      size="sm"
-                      color="light-green"
-                      variant="outlined"
-                      className="p-1 "
-                      disabled={index === rowindex ? false : true}
-                    >
-                      Validé
-                    </Button>
-                    <Button
-                      onClick={handlereditingcars}
-                      variant="outlined"
-                      size="sm"
-                      color="indigo"
-                      className="p-1 "
-                      disabled={index === rowindex ? false : true}
-                    >
-                      edit
-                    </Button>
+        <Button
+          onClick={() => {
+            if (Droit.car.some((element) => element === true)) {
+              navigate("/vehicule");
+            } else {
+              if (!openSnackbar) {
+                setopenSnackbar(true);
+              }
+            }
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={camion} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Véhicules
+          </p>
+        </Button>
+        <Button
+          onClick={() => {
+            if (Droit.chf.some((element) => element === true)) {
+              navigate("/chauffeur");
+            } else {
+              if (!openSnackbar) {
+                setopenSnackbar(true);
+              }
+            }
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={chauffeur} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Chauffeurs
+          </p>
+        </Button>
+        <Button
+          onClick={() => {
+            if (Droit.relation.some((element) => element === true)) {
+              navigate("/Relation");
+            } else {
+              if (!openSnackbar) {
+                setopenSnackbar(true);
+              }
+            }
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={relstion} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Relations
+          </p>
+        </Button>
 
-                    <Button
-                      onClick={async () => {
-                        setchanger(!changer);
-                        const response = await removeCar(car.Code_Viecule);
-                        console.log(response);
-                      }}
-                      size="sm"
-                      color="red"
-                      variant="outlined"
-                      className="p-1 "
-                      disabled={index === rowindex ? false : true}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                </tr>
-              ))}
-              <tr>
-                <Button
-                  onClick={handleraddingcars}
-                  variant="outlined"
-                  className="w-fit mt-1 flex gap-2 items-center p-2"
-                >
-                  <IoMdAddCircle />
-                  Ajoute Vehicle
-                </Button>
-
-                <td />
-
-                <div className=" table-cell font-bold text-lg  col-span-2">
-                  Total: <span className="font-body"> {cars.length}</span>
-                </div>
-              </tr>
-            </tbody>
-          </table>
-
-          <ReactPaginate
-            className="flex gap-20 justify-center"
-            breakLabel="..."
-            nextLabel="next >"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={1}
-            pageCount={pageCount}
-            previousLabel="< previous"
-            renderOnZeroPageCount={null}
-          />
-          <Dialog open={iseditcar} handler={handlereditingcars}>
-            <Editcar c={editcar} handler={handlereditingcars} />
-          </Dialog>
-
-          <Dialog open={isAddCars} handler={handleraddingcars}>
-            <Addcars type="propre" handelclose={handleraddingcars} />
-          </Dialog>
+        <Button
+          onClick={() => {
+            if (Droit.Modele.some((element) => element === true)) {
+              navigate("/modele");
+            } else {
+              if (!openSnackbar) {
+                setopenSnackbar(true);
+              }
+            }
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={modele} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Modeles
+          </p>
+        </Button>
+        {/* <Button
+          onClick={() => {
+            navigate("");
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={alarme} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Alertes
+          </p>
+        </Button> */}
+        <Button
+          onClick={() => {
+            if (Droit.user.some((element) => element === true)) {
+              navigate("/utilisateur");
+            } else {
+              if (!openSnackbar) {
+                setopenSnackbar(true);
+              }
+            }
+          }}
+          className="bg-[#ececec] flex flex-col justify-center items-center"
+          sx={{ bgcolor: "#ececec" }}
+        >
+          <img src={user} alt="alarme" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Utilisateurs
+          </p>
+        </Button>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openSnackbar}
+          autoHideDuration={800}
+          onClose={() => setopenSnackbar(false)}
+        >
+          <Alert
+            onClose={() => setopenSnackbar(false)}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            Vous n’y avez pas accès.
+          </Alert>
+        </Snackbar>
+        {/* <div className="bg-[#ececec] flex flex-col justify-center items-center ">
+          <img src={contrat} alt="" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Contrats
+          </p>
         </div>
+        <div className="bg-[#ececec] flex flex-col justify-center items-center ">
+          <img src={camion} alt="" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Véhicules
+          </p>
+        </div> */}
+        {/* <div className="bg-[#ececec] flex flex-col justify-center items-center ">
+          <img src={modele} alt="" className="filter  w-24" />
+          <p className="bg-[#4a4a4a] px-3 text-slate-100 mt-1 rounded-xl">
+            Modeles
+          </p>
+        </div> */}
+        {/* <div className="bg-[#ececec] flex flex-col justify-center items-center "></div>
+        <div className="bg-[#ececec] flex flex-col justify-center items-center "></div> */}
+        {/* <div className="bg-[#ececec] flex flex-col justify-center items-center ">
+          <FcTemplate />
+        </div> */}
       </div>
     </div>
   );

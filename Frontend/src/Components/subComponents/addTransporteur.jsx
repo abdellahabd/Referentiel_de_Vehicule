@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Input,
-} from "@material-tailwind/react";
+import { Button, Card, TextField } from "@mui/material";
 import { useState } from "react";
 function addTransporteur({ settrons, handelclick }) {
   const handelChangeValues = (e) => {
@@ -23,24 +16,27 @@ function addTransporteur({ settrons, handelclick }) {
     //     console.l(trons);
     //   }}
     >
-      <Card>
-        <CardHeader>Ajouter Transporteur</CardHeader>
-        <CardBody>
-          <Input onChange={handelChangeValues} label="nom" name="nom" />
-          <Input onChange={handelChangeValues} label="Adresse" name="adresse" />
-          <Input
+      <from>
+        <h2>Ajouter Transporteur</h2>
+        <div>
+          <TextField onChange={handelChangeValues} label="nom" name="nom" />
+          <TextField
+            onChange={handelChangeValues}
+            label="Adresse"
+            name="adresse"
+          />
+          <TextField
             onChange={handelChangeValues}
             type="tel"
             name="tel"
             label="numéro telephone"
           />
-        </CardBody>
-        <CardFooter>
-          <Button type="button" onClick={handelclick}>
-            Add
-          </Button>
-        </CardFooter>
-      </Card>
+        </div>
+
+        <Button type="button" onClick={handelclick}>
+          Add
+        </Button>
+      </from>
       ;
     </form>
   );

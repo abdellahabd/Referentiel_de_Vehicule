@@ -88,10 +88,75 @@ export const craete = async () => {
   await district3.addStructer(centre3);
 
   ///////////////////////////////////////////////////
-  await Access.create({ name: "addcar" });
+  await Access.create({ name: "viewsCar" });
   await Access.create({ name: "removecar" });
-  await Access.create({ name: "adduser" });
+  await Access.create({ name: "Validcar" });
+  await Access.create({ name: "editcar" });
+  await Access.create({ name: "addcar" });
+  await Access.create({ name: "affectcar" });
+  ///////////////////////////////////////////////////
+  await Access.create({ name: "viewsContrat" });
+  await Access.create({ name: "removeContrat" });
+  await Access.create({ name: "ValidContrat" });
+  await Access.create({ name: "editContrat" });
+  await Access.create({ name: "addContrat" });
+  await Access.create({ name: "avnenantContrat" });
+  ///////////////////////////////////////////////////
+  await Access.create({ name: "viewsuser" });
   await Access.create({ name: "removeruser" });
+  await Access.create({ name: "Validuser" });
+  await Access.create({ name: "edituser" });
+  await Access.create({ name: "adduser" });
+  ///////////////////////////////////////////////////
+  await Access.create({ name: "viewsModele" });
+  await Access.create({ name: "removeModele" });
+  await Access.create({ name: "ValidModele" });
+  await Access.create({ name: "editModele" });
+  await Access.create({ name: "addModele" });
+  ///////////////////////////////////////////////////
+  await Access.create({ name: "viewsChauffeur" });
+  await Access.create({ name: "removeChauffeur" });
+  await Access.create({ name: "ValidChauffeur" });
+  await Access.create({ name: "editChauffeur" });
+  await Access.create({ name: "addChauffeur" });
+  ///////////////////////////////////////////////////
+  await Access.create({ name: "viewsRelation" });
+  await Access.create({ name: "removeRelation" });
+  await Access.create({ name: "ValidRelation" });
+  await Access.create({ name: "editRelation" });
+  await Access.create({ name: "addRelation" });
+
+  //////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////
+  const r1 = await Com.createRelation_S_D({ Pu: 232, km: "flplv" });
+  const r2 = await Com.createRelation_S_D({ Pu: 232, km: "flplv" });
+  const r3 = await Com.createRelation_S_D({ Pu: 232, km: "flplv" });
+
+  const r4 = await gpl.createRelation_S_D({ Pu: 232, km: "flplv" });
+  const r5 = await gpl.createRelation_S_D({ Pu: 232, km: "flplv" });
+  const r6 = await gpl.createRelation_S_D({ Pu: 232, km: "flplv" });
+
+  await r1.setDisnitaionStr(gpl);
+  await r1.setSource(carburent);
+
+  await r2.setDisnitaionStr(district1);
+  await r2.setSource(district2);
+
+  await r3.setDisnitaionStr(district1);
+  await r3.setSource(district3);
+
+  await r4.setDisnitaionStr(gpl);
+  await r4.setSource(carburent);
+
+  await r5.setDisnitaionStr(gpl);
+  await r5.setSource(carburent);
+
+  await r6.setDisnitaionStr(gpl);
+  await r6.setSource(carburent);
+
+  // await r1.setDisnitaionStr(gpl);
+  // await r1.setSource(carburent);
 
   return;
 };

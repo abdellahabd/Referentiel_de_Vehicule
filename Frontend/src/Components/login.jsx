@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Input } from "@material-tailwind/react";
+import { TextField, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { postUserLogin } from "../API/auth.js";
 import { MdError } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
-import { addUser } from "../Store/index.js";
-
+import { useDispatch } from "react-redux";
+import { addUser, adddroit } from "../Store/index.js";
+import logo from "/assets/cdnlogo.com_naftal.svg";
 function login() {
   const NAv = useNavigate();
   const Dispatch = useDispatch();
@@ -43,7 +43,6 @@ function login() {
         }
         seterromsg(response.error.msg);
       } else {
-        Dispatch(addUser(response.user));
         NAv("/home");
       }
     } catch (error) {
@@ -54,20 +53,22 @@ function login() {
   /////////////////////////////////////////////////////////////////////
 
   return (
-    <div className="bg-[#1e1e1e] flex justify-center  flex-col  h-screen">
+    <div className="bg-[#fffcf9] flex    ">
       {/*  */}
-      <div className="bg-[#ffffff] mx-auto rounded-md p-4  h-[444px] ">
+
+      <div className="bg-[#fffcf9] mx-auto rounded-md w-2/5  h-screen relative  ">
+        <img src={logo} className=" w-20 top-10 left-10 absolute " />
         <form
-          className="pt-6 px-11 flex flex-col justify-between items-center h-full"
+          className="pt-6 px-11 flex flex-col  items-center h-full relative"
           onSubmit={HandelSubmit}
         >
           {/*  */}
-          <h1 className="font-bold  text-lg mb-5">Login</h1>
+          <h1 className="font-bold  text-lg mt-56 mb-5">Login</h1>
           {/*  */}
-          <div>
+          <div className="absolute bottom-[40%]">
             {/* name */}
-            <div className="relative mb-10 mt-6">
-              <Input
+            <div className="relative mb-10">
+              <TextField
                 error={emailerros}
                 type="text"
                 label="email"
@@ -83,7 +84,7 @@ function login() {
             </div>
             {/* password */}
             <div className=" my-4 relative ">
-              <Input
+              <TextField
                 error={passworderros}
                 type="password"
                 label="Password"
@@ -98,13 +99,20 @@ function login() {
               )}
             </div>
           </div>
-          <div className="mt-4 flex flex-col justify-between">
-            <Button className="mt-5 mx-auto " type="submit">
+          <div className=" flex flex-col justify-between   absolute bottom-[30%] px-20">
+            <Button
+              color="warning"
+              sx={{ textTransform: "none" }}
+              className=" mx-auto normal-case box-border"
+              variant="contained"
+              type="submit"
+            >
               Login
             </Button>
           </div>
         </form>
       </div>
+      <div className="w-3/5 bg-Naftal-pattern bg-no-repeat bg-cover h-screen "></div>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import axios from "axios";
-export const postContart = async (Contrat, cars) => {
+export const postContart = async (Contrat, trons, infor) => {
   const { data } = await axios.post("http://localhost:2500/addcontat", {
     Contrat,
-    cars,
+    trons,
+    infor,
   });
   return data;
 };
@@ -29,6 +30,10 @@ export const addAvenant = async (id) => {
   const { data } = await axios.post(`http://localhost:2500/addavenant/${id}`);
   return data;
 };
+export const counterWarning = async () => {
+  const { data } = await axios.get(`http://localhost:2500/counterWarning`);
+  return data;
+};
 
 export const validateContract = async (id) => {
   const { data } = await axios.get(
@@ -36,6 +41,7 @@ export const validateContract = async (id) => {
   );
   return data;
 };
+
 export const removeContract = async (id) => {
   const { data } = await axios.get(
     `http://localhost:2500/removecontract/${id}`

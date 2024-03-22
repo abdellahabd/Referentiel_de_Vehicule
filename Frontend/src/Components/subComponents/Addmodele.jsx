@@ -1,14 +1,31 @@
-import React, { useState } from "react";
-import { Button, Input, Option, Select } from "@material-tailwind/react";
-import { addModele } from "../../API/Modele.js";
-function Addmodele({ handeladd }) {
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  MenuList,
+  FormControl,
+  InputLabel,
+  Autocomplete,
+} from "@mui/material";
+import { addModele, GetGenres, updateModele } from "../../API/Modele.js";
+
+function Addmodele({ handeladd, m, mood, onclose }) {
   const [modele, setmodele] = useState({
-    moteur_Puossance: "",
-    moteur_type: "",
-    Cylindree: "",
-    BV_type: "",
-    BV_marque: "",
+    moteur_Puossance: mood == "edit" ? m.moteur_Puossance : "",
+    moteur_type: mood == "edit" ? m.moteur_type : "",
+    Cylindree: mood == "edit" ? m.Cylindree : "",
+    BV_type: mood == "edit" ? m.BV_type : "",
+    BV_marque: mood == "edit" ? m.BV_marque : "",
+    genreIdG: mood == "edit" ? m.genreIdG : "",
   });
+
+  const gerne_edit = {
+    label: mood == "edit" ? `${m.genre}` : "",
+    id: mood == "edit" ? m.genreIdG : "",
+  };
+  const [Gerne, setGerne] = useState([]);
 
   const handelChangeValues = (e) => {
     setmodele((premodeles) => ({
@@ -16,57 +33,125 @@ function Addmodele({ handeladd }) {
       [e.target.name]: e.target.value,
     }));
   };
-  const handelChangeValuesselect = (e) => {
-    setmodele((premodeles) => ({
-      ...premodeles,
-      BV_type: e,
-    }));
-  };
+
+  useEffect(() => {
+    async function name() {
+      const genres = await GetGenres();
+      setGerne(genres);
+    }
+    name();
+  }, []);
   const handelsubmit = async (e) => {
-    e.preventDefault();
-    handeladd();
-    await addModele(modele);
+    try {
+      e.preventDefault();
+      let responce;
+      if (mood == "edit") {
+        responce = await updateModele(modele, m.id);
+      } else {
+        responce = await addModele(modele);
+      }
+
+      if (responce == "done") {
+        onclose(true);
+        handeladd();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>
       <form onSubmit={handelsubmit}>
-        <h2 className="text-center font-bold mt-4"> Ajoute Modele</h2>
-        <div className="w-11/12 m-auto p-5 flex flex-col gap-3 mt-2">
-          <Input
+        <h2 className="text-center font-bold mt-4">
+          {" "}
+          {mood == "edit" ? "Modifiée Modele" : "Ajoute Modele"}
+        </h2>
+        <div className="w-[30em] m-auto p-5 flex flex-col gap-3 mt-2 px-24">
+          <Autocomplete
+            onSelect={(e) => {
+              setmodele({ ...modele, genreIdG: e.target.value[0] });
+            }}
+            options={Gerne.map((f) => {
+              return { label: f.name, id: f.id_G };
+            })}
+            defaultValue={mood == "edit" ? gerne_edit : null}
+            getOptionLabel={(param) => `${param.id} (${param.label})`}
+            renderInput={(params) => <TextField {...params} label="Gerne" />}
+          />
+
+          <TextField
             label="Moteur Puossance "
             name="moteur_Puossance"
             onChange={handelChangeValues}
+            defaultValue={modele.moteur_Puossance}
           />
-          <Input
+          {/* <TextField
             label="Moteur type"
             name="moteur_type"
             onChange={handelChangeValues}
-          />
-          <Input
+            defaultValue={modele.moteur_type}
+          /> */}
+          <FormControl>
+            <InputLabel id="demo-simple-select-label2">Moteur type</InputLabel>
+            <Select
+              label="Moteur type"
+              onChange={handelChangeValues}
+              labelId="demo-simple-select-label2"
+              defaultValue={modele.moteur_type}
+              name="moteur_type"
+            >
+              <MenuItem key={2} value="L">
+                L
+              </MenuItem>
+              <MenuItem key={1} value="V">
+                V
+              </MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
             label="Cylindree"
             name="Cylindree"
             onChange={handelChangeValues}
+            defaultValue={modele.Cylindree}
           />
-          <Select
-            label="BV type"
-            name="BV_type"
-            onChange={handelChangeValuesselect}
-          >
-            <Option value="L">L</Option>
-            <Option value="V">V</Option>
-          </Select>
-          <Input
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">BV type</InputLabel>
+            <Select
+              label="BV type"
+              onChange={handelChangeValues}
+              labelId="demo-simple-select-label"
+              defaultValue={modele.BV_type}
+              // id="demo-simple-select"
+              name="BV_type"
+            >
+              <MenuItem key={3} value="manuelle">
+                manuelle
+              </MenuItem>
+              <MenuItem key={2} value="automatique">
+                automatique
+              </MenuItem>
+              <MenuItem key={1} value="séquentielle">
+                séquentielle
+              </MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
             label="BV marque"
             name="BV_marque"
             onChange={handelChangeValues}
+            defaultValue={modele.BV_marque}
           />
         </div>
         <div className="m-auto mt-10 mb-4 flex justify-center gap-7">
-          <Button variant="outlined" color="gray" onClick={handeladd}>
+          <Button variant="outlined" onClick={handeladd}>
             Annule
           </Button>
-          <Button color="green" type="submit">
-            Ajoute
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{ width: "fit-content", textTransform: "none" }}
+          >
+            {mood == "edit" ? "Modifiée" : "Ajoute"}
           </Button>
         </div>
       </form>

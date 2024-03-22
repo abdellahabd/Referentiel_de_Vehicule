@@ -7,7 +7,10 @@ const Modele = sequelize.define(
     moteur_Puossance: { type: DataTypes.STRING },
     moteur_type: { type: DataTypes.CHAR, values: ["V", "L"] },
     Cylindree: { type: DataTypes.STRING },
-    BV_type: { type: DataTypes.STRING },
+    BV_type: {
+      type: DataTypes.STRING,
+      values: ["séquentielle", "automatique", "manuelle"],
+    },
     BV_marque: { type: DataTypes.STRING },
     validite: { type: DataTypes.BOOLEAN, defaultValue: false },
   },

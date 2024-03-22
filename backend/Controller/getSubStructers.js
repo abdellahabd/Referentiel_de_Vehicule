@@ -6,10 +6,12 @@ export const get_strcuters = async (str, type) => {
   if (type === "centre") {
     return [str];
   } else {
-    allstrs = await Structer.findAll({ where: { Structerid: str } });
+    allstrs = await Structer.findAll({ where: { StructerCodeS: str } });
     if (type === "Branche") {
       const instances = await Structer.findAll({
-        where: { [Op.or]: allstrs.map((str) => ({ Structerid: str.CodeS })) },
+        where: {
+          [Op.or]: allstrs.map((str) => ({ StructerCodeS: str.CodeS })),
+        },
       });
       allstrs = [...allstrs, ...instances];
     }
