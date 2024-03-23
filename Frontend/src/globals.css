@@ -1,0 +1,40 @@
+body {
+  box-sizing: content-box;
+}
+html {
+  box-sizing: content-box;
+}
+
+.cullum {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.expired {
+  background-color: #df5f78;
+}
+.expire10 {
+  background-color: #f1c235;
+}
+.expire20 {
+  background-color: #dfdd5f;
+}
+
+.table-th {
+  background-color: dodgerblue;
+  color: white;
+}
+.cell {
+  border: solid #848484 1px;
+  /* padding: 0px; */
+}
+.table-td {
+  color: #4b5563;
+}
+/* .full {
+  padding: 0%;
+  width: 120rem;
+  padding-left: 0;
+  padding-right: 0;
+} */
